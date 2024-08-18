@@ -16,4 +16,6 @@ func main() {
 	r.GET("/posts", controllers.GetPosts)
 	r.POST("/posts", controllers.CreatePost)
 	r.Run() // listen and serve on 0.0.0.0:8080
+
+	defer initializers.DB.Close()
 }

@@ -1,6 +1,10 @@
 package services
 
 import (
+	"context"
+	"fmt"
+	"log"
+
 	"github.com/mKepka16/go-crud/dtos"
 	"github.com/mKepka16/go-crud/initializers"
 	"github.com/mKepka16/go-crud/models"
@@ -14,6 +18,19 @@ func CreatePost(newPost dtos.NewPost) (dtos.Post, error) {
 	}
 
 	return dtos.Post{ID: post.ID, Title: post.Title, Body: post.Body, CreatedAt: post.CreatedAt}, nil
+}
+
+func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
+	u, err := client.User.
+		Create().
+		SetAge(30).
+		SetName("a8m").
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating user: %w", err)
+	}
+	log.Println("user was created: ", u)
+	return u, nil
 }
 
 func GetPosts() ([]dtos.Post, error) {

@@ -1,21 +1,24 @@
 package initializers
 
 import (
+	"context"
 	"log"
 	"os"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/mKepka16/go-crud/ent"
 )
 
-var DB *gorm.DB
+var DB *ent.Client
 
 func ConnectToDB() {
-	var err error
-	dsn := os.Getenv("DB_URL")
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB_URL := os.Getenv("DB_URL")
 
+	var err error
+	DB, err = ent.Open("postgres", DB_URL)
 	if err != nil {
-		log.Fatal("Failed to connect to database")
+		log.Fatalf("failed opening connection to postgres: %v", err)
+	}
+	if err := DB.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
 	}
 }
